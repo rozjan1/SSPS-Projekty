@@ -1,0 +1,39 @@
+class Enemy extends GameObject {
+  int x = 0;
+  int y = 0;
+  long speed, lastMoved = 0;
+  boolean west = false;
+  GameObject GO;
+
+  /**
+   * @param speed Speed of movent of enemy in milliseconds
+   */
+  Enemy(Coordinate pos, long speed) {
+    super(pos);
+    this.speed = speed;
+  }
+
+  void display(int x, int y, int sizeX, int sizeY) {
+    this.x = x;
+    this.y = y;
+    fill(0, 0, 255);
+    rect(x, y, sizeX, sizeY);
+  } 
+
+
+  @Override
+    void update() {
+    long currentMillis = millis();
+    if (currentMillis - lastMoved >= speed) {
+      // TODO: IMPLEMENT MOVE!
+      int currentDirection = -1;
+      if (!west) {
+        if (GO+currentDirection instanceof Wall) {
+          currentDirection *= -1;
+          println("MOVE!");
+          lastMoved = currentMillis;
+        }
+      }
+    }
+  }
+}
