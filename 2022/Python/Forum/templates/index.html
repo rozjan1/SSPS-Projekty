@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="static/blog.css" rel="stylesheet" media="screen">
+    <title>Main page</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+    <a class="navbar-brand" href="#">My server</a>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+        </ul>
+        {% if is_logged_in == False %}
+        <form class="form-inline my-2 my-lg-0" action="" method="post">
+            <input class="form-control mr-sm-2" type="text" placeholder="Username" aria-label="Username" name="username"
+                   value="{{request.form.username}}">
+            <input class="form-control mr-sm-2" type="password" placeholder="Password" aria-label="Password"
+                   name="password" value="{{request.form.password}}">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Login">Login</button>
+        </form>
+        <form action="/register">
+            <button class="btn btn-outline-success mz-2 my-sm-0" type="submit" value="Register">Register</button>
+        </form>
+        {% else %}
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <span class="nav-item nav-link">Currently logged in as {{curr_user.username}}</span>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0" action="" method="post">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Logout">Logout</button>
+        </form>
+        {% endif %}
+    </div>
+</nav>
+
+<main role="main" class="container">
+    <div class="container">
+        {% if is_logged_in %}
+        <p class="reg_users">Registered users: {{reg_users}}</p>
+        {% endif %}
+        {% if error_msg %}
+        <div>
+            <p class="error"><strong>Error: {{error_msg}}</strong></p>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if is_logged_in == True %}
+    <div class="container mx-auto my-3">
+    <form action="/add_post" method="post">
+        <input type="text" placeholder="Title" name="title" value="" class="form-control col-auto">
+        <textarea class="form-control" placeholder="Message" name="message" rows="3"></textarea>
+        <button class="btn btn-outline-success rounded-0 my-2 my-sm-0" type="submit" value="Submit">Submit post</button>
+    </form>
+    </div>
+    {% endif %}
+
+    {% for post in posts %}
+    <div class="jumbotron">
+        <h2 class="blog-post-title">{{post.title}}</h2>
+        <p class="blog-post-meta">{{post.date}} by {{post.author.username}}</p>
+        <p class="lead">{{post.body}}</p>
+        {% if post.author == curr_user %}
+        <form action="/delete_post/{{ post.id }}" method="post">
+            <button class="btn btn-outline-success mz-2 my-sm-0" type="submit" value="delete_post">Delete post</button>
+        </form>
+        {% endif %}
+    </div>
+    {% endfor %}
+</main>
+</body>
+</html>
